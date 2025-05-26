@@ -35,15 +35,7 @@ The tool builds on the legacy of Threader3000 but has been completely redesigned
 - Python 3.6 or higher
 - Nmap (required for advanced scanning features)
 
-### Installation Methods
-
-**Method 1: Using pip**
-
-```bash
-pip install grecon
-```
-
-**Method 2: From Source**
+### Installation Method
 
 ```bash
 # Clone the repository
