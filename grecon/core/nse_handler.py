@@ -83,7 +83,9 @@ class NseHandler:
             List of recommended NSE scripts for the service
         """
         service = service.lower()
-        # Standard mapping, including AJP if detected by name
+        # Handle all AJP protocol variants (e.g., 'ajp', 'ajp13')
+        if service.startswith("ajp"):
+            return ["ajp-headers", "ajp-request"]
         scripts = self.SERVICE_SCRIPT_MAP.get(service, [])
         if not scripts:
             scripts = self.SERVICE_SCRIPT_MAP["default"]
