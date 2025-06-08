@@ -46,9 +46,6 @@ cd grecon
 
 # Install using Make
 make install
-
-# Or install using pip
-pip install .
 ```
 
 ## Usage
