@@ -49,6 +49,7 @@ class NseHandler:
         "dns": ["dns-recursion", "dns-service-discovery", "dns-zone-transfer"],
         "telnet": ["telnet-encryption", "telnet-brute"],
         "snmp": ["snmp-info", "snmp-brute", "snmp-interfaces"],
+        "ajp": ["ajp-headers", "ajp-request"],
         "default": ["banner", "version"]
     }
     
@@ -74,22 +75,18 @@ class NseHandler:
     def get_service_scripts(self, service: str) -> List[str]:
         """
         Get recommended NSE scripts for a specific service.
-        
+        Handles AJP (Apache JServ Protocol) by service name, following the same pattern as other services.
+
         Args:
             service: Service name (e.g., http, ssh, ftp)
-        
         Returns:
             List of recommended NSE scripts for the service
         """
         service = service.lower()
-        
-        # Try to get scripts for the specific service
+        # Standard mapping, including AJP if detected by name
         scripts = self.SERVICE_SCRIPT_MAP.get(service, [])
-        
-        # If no specific scripts found, return default scripts
         if not scripts:
             scripts = self.SERVICE_SCRIPT_MAP["default"]
-        
         return scripts
     
     def generate_script_command(self, 
@@ -209,21 +206,21 @@ class NseHandler:
         for port, service in self.service_map.items():
             # Normalize service name for display and file naming
             service_clean = ''.join(c if c.isalnum() else '_' for c in service.lower())
-            
+
             # Get recommended scripts for this service
             scripts = self.get_service_scripts(service)
-            
+
             # Filter scripts based on safety level
             if safety_level == "safe":
                 scripts = [s for s in scripts if "brute" not in s and "dos" not in s]
             elif safety_level == "default":
                 scripts = [s for s in scripts if "dos" not in s]
-            
+
             if scripts:
                 # Generate a descriptive command with specific port and service
                 command = self.generate_script_command(scripts=scripts, port=port, service=service_clean)
                 logger.info(f"Running NSE scripts for {service} on port {port}: {command}")
-                
+
                 try:
                     # Execute the Nmap command
                     result = subprocess.run(
@@ -253,7 +250,7 @@ class NseHandler:
                         "scripts": scripts
                     }
                     logger.error(f"NSE scripts for {service} on port {port} failed: {e}")
-        
+
         return results
     
     def parse_nmap_xml(self, xml_file: str) -> Dict[int, str]:
