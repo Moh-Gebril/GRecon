@@ -42,7 +42,7 @@ The tool builds on the legacy of Threader3000 but has been completely redesigned
 git clone https://github.com/Moh-Gebril/grecon.git
 
 # Navigate to the directory
-cd grecon
+cd GRecon
 
 # Install using Make
 make install
